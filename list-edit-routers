@@ -1,0 +1,19 @@
+const express = require('express');
+const listEditRouter = express.Router();
+
+listEditRouter.post('/create', (req, res) => {
+  res.send('Tarea creada exitosamente');
+});
+
+listEditRouter.delete('/delete/:taskId', (req, res) => {
+  const taskId = req.params.taskId;
+  res.send(`Tarea con ID ${taskId} eliminada`);
+});
+
+
+listEditRouter.put('/update/:taskId', (req, res) => {
+  const taskId = req.params.taskId;
+  res.send(`Tarea con ID ${taskId} actualizada`);
+});
+
+module.exports = listEditRouter;

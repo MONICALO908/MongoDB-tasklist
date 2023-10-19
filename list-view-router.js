@@ -1,11 +1,11 @@
 const express = require('express');
-const { JWTValidation } = require('./authMiddleware');
+// const { JWTValidation } = require('./authMiddleware');
 const { mostrarTareas, obtenerTarea } = require('.');
 const { validateNumber } = require('./listEditMiddleware');
 const listViewRouter = express.Router();
 
 
-listViewRouter.use(JWTValidation)
+// listViewRouter.use(JWTValidation)
 
 listViewRouter.get('/completed', async(req, res) => {
   try {

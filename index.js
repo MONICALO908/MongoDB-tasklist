@@ -1,35 +1,45 @@
 const readline = require('readline');
+const connectDB = require("./db/db");
+const TaskModel = require('./models/taskModel');
+
+connectDB();
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-const tareas = [{id:2, description:"trotar", completed:true}];
+// const tareas = [{id:2, description:"trotar", completed:true}];
 
 function mostrarTareas(tipo) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
 
     const respuesta = tipo != null 
-      ? tareas.filter(tarea=>tarea.completed==tipo)
-      : tareas
+      ? await TaskModel.find({
+        completed: tipo
+      })
+      : await TaskModel.find();
     resolve(respuesta);
   });
 }
 
 function agregarTarea(tarea) {
-  return new Promise((resolve, reject) => {
-    tareas.push(tarea);
+  return new Promise(async (resolve, reject) => {
+    
+    const task = new TaskModel(tarea)
+    await task.save()
       resolve("creado");
   });
 }
 
 function eliminarTarea(numero) {
-  return new Promise((resolve, reject) => {
-    const index = numero - 1;
-    if (index >= 0 && index < tareas.length) {
-      tareas.splice(index, 1);
-      resolve(tareas)
+  return new Promise(async (resolve, reject) => {
+
+    const taskDeleted = await TaskModel.deleteOne({_id:numero})
+
+    if (taskDeleted) {
+      
+      resolve(taskDeleted)
     } else {
       reject(new Error('Número de tarea inválido.'));
     }
@@ -37,11 +47,12 @@ function eliminarTarea(numero) {
 }
 
 function completarTarea(numero) {
-  return new Promise((resolve, reject) => {
-    const index = numero - 1;
-    if (index >= 0 && index < tareas.length) {
-      tareas[index].estado = true;
-      resolve(tareas);
+  return new Promise(async (resolve, reject) => {
+
+    const taskCompleted = await TaskModel.updateOne({_id:numero},{completed:true})
+
+    if (taskCompleted) {
+      resolve(taskCompleted);
     } else {
       reject(new Error('Número de tarea inválido.'));
     }
@@ -49,10 +60,12 @@ function completarTarea(numero) {
 }
 
 function obtenerTarea(numero) {
-  return new Promise((resolve, reject) => {
-    const index = numero - 1;
-    if (index >= 0 && index < tareas.length) {
-      resolve(tareas[index]);
+  return new Promise(async (resolve, reject) => {
+
+    const task = await TaskModel.findOne({_id:numero})
+  
+    if (task) {
+      resolve(task);
     } else {
       reject(new Error('Número de tarea inválido.'));
     }

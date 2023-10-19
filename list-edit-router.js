@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { validatePostData, validateNumber } = require('./listEditMiddleware');
-const { JWTValidation } = require('./authMiddleware');
+// const { JWTValidation } = require('./authMiddleware');
 const { agregarTarea, completarTarea, eliminarTarea } = require('.');
 
 router.use(validatePostData)
-router.use(JWTValidation)
+// router.use(JWTValidation)
 router.use("/create-task",(req, res, next) => {
-    const {id, description, completed } = req.body;
+    const {title, description, completed } = req.body;
   
-    if (id && description && completed !== undefined) {
+    if (title && description && completed !== undefined) {
       next();
     } else {
       return res.status(400).json({ error: 'El cuerpo de la solicitud debe contener description y completed.' });
